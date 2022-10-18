@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      # To connect to the PostgreSQL database run the following command
+      # psql -h localhost -p 15432 -U admin -d mydb
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres
+    ports:
+      - "15432:5432"
+    # volumes:
+      # Pass volume named mysql-data to mysql container
+      # - "postgresql-data-db:/var/lib/postgresql/data"
+    networks:
+      - postgres-network
+
+  dbadmin:
+    depends_on:
+      - postgres
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "16543:80"
+    networks:
+      - postgres-network
+
+# Add volumes definition to create volume mysql-data referenced above
+volumes:
+  postgresql-data-db:
+
+
+networks:
+  postgres-network:
+    driver: bridge
