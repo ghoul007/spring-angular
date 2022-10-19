@@ -29,6 +29,9 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
 
   @Autowired
   private WebSocketService webSocketService;
+ @Autowired
+    private ErrorService errorService;
+
 
   protected abstract String getEntityTopic();
 
@@ -66,13 +69,24 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
     updateEntity(entity, dto);
 
     // Save entity
-    final ENTITY savedEntity = repository.save(entity);
 
 
-    notifyFrontend();
+    try {
+      final ENTITY savedEntity = repository.save(entity);
+
+      // Notify frontend that there has been a change on entity
+      notifyFrontend();
+
+      // Convert to DTO and return it
+      return converter.convert(savedEntity);
+    } catch (final Exception e) {
+      errorService.displayError(e.getMessage());
+      return null;
+    }
+
+
 
     // Convert to DTO and return it
-    return converter.convert(savedEntity);
   }
 
   @Override

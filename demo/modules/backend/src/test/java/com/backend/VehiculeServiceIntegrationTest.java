@@ -13,11 +13,32 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @SpringBootTest
 public class VehiculeServiceIntegrationTest {
   @Autowired
   public VehiculeService service;
+
+
+
+
+
+      @Test
+    public void testVehicleNumberNull() {
+        final VehiculeDTO dto = new VehiculeDTO();
+
+        assertThatCode(() -> service.save(dto))
+                .hasMessageContaining("not-null property references a null or transient value");
+    }
+    @Test
+    public void testVehicleNumberUnique() {
+        final VehiculeDTO dto = new VehiculeDTO();
+        dto.setNumber("SBA - 1");
+
+        assertThatCode(() -> service.save(dto)).doesNotThrowAnyException();
+        assertThatCode(() -> service.save(dto)).hasMessageContaining("nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement");
+    }
 
   @Test
   void testVehiculeCRUD() {
