@@ -20,6 +20,11 @@ public class VehiculeService extends AbstractCRUDService<Vehicule, VehiculeDTO> 
   }
 
   @Override
+  protected String getEntityTopic() {
+      return "vehicle";
+  }
+
+  @Override
   protected void updateEntity(Vehicule entity, VehiculeDTO dto) {
       entity.setNumber(dto.getNumber());
   }

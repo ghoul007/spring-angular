@@ -7,6 +7,7 @@ import com.backend.entity.DistributedEntity;
 import com.backend.repository.DistributedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.util.CollectionUtils;
 
@@ -21,6 +22,11 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
   private DistributedRepository<ENTITY> repository;
   private AbstractDTOConverter<ENTITY, DTO> converter;
   private Class<ENTITY> entityClass;
+
+  @Autowired
+  private WebSocketService webSocketService;
+
+  protected abstract String getEntityTopic();
 
   public AbstractCRUDService(final DistributedRepository<ENTITY> repository,
                              final AbstractDTOConverter<ENTITY, DTO> converter) {
@@ -58,6 +64,9 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
     // Save entity
     final ENTITY savedEntity = repository.save(entity);
 
+
+    notifyFrontend();
+
     // Convert to DTO and return it
     return converter.convert(savedEntity);
   }
@@ -86,6 +95,7 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
     }
     try {
       repository.delete(entity);
+      notifyFrontend();
       return true;
     } catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -119,6 +129,14 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
       return null;
     }
   }
+  private void notifyFrontend() {
+        final String entityTopic = getEntityTopic();
+        if (entityTopic == null) {
+            LOG.error("Failed to get entity topic");
+            return;
+        }
 
+        webSocketService.sendMessage(entityTopic);
+    }
 
 }
