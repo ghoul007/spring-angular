@@ -7,11 +7,11 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableJpaRepositories(repositoryBaseClass = DistributedRepositoryImpl.class)
+@EnableJpaRepositories("com.backend.repository")
 public class ApplicationConfig implements WebMvcConfigurer {
 
   @Override
   public void addCorsMappings(final CorsRegistry registry) {
-    registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:4201");
+//    registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:4201");
   }
 }
