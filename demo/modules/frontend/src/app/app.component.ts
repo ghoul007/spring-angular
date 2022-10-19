@@ -12,6 +12,6 @@ export class AppComponent {
       this.title = response.message;
     })
   }
-
+  
   title = "no title";
 }
