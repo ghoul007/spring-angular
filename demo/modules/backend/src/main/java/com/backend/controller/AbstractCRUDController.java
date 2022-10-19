@@ -2,6 +2,8 @@ package com.backend.controller;
 
 import com.backend.api.AbstractCRUDApi;
 import com.backend.dto.BaseDTO;
+import com.backend.dto.search.PagedResponse;
+import com.backend.dto.search.SearchRequest;
 import com.backend.entity.DistributedEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,8 @@ public class AbstractCRUDController<ENTITY extends DistributedEntity, DTO  exten
   }
 
   @GetMapping("/list")
-  public List<DTO> list() {
-    return api.list();
+  public PagedResponse<DTO> list(SearchRequest request) {
+    return api.list(request);
   }
 
   @DeleteMapping("/{id}")

@@ -3,12 +3,16 @@ package com.backend.service;
 import com.backend.api.AbstractCRUDApi;
 import com.backend.converter.AbstractDTOConverter;
 import com.backend.dto.BaseDTO;
+import com.backend.dto.search.PagedResponse;
+import com.backend.dto.search.SearchRequest;
+import com.backend.dto.search.util.SearchRequestUtil;
 import com.backend.entity.DistributedEntity;
 import com.backend.repository.DistributedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.GenericTypeResolver;
+import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -82,8 +86,14 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
   }
 
   @Override
-  public List<DTO> list() {
-    return getDtos(repository.findAll());
+  public PagedResponse<DTO> list(final SearchRequest request) {
+    final Page<ENTITY> response = repository.findAll(SearchRequestUtil.toPageRequest(request));
+    if (response.isEmpty()) {
+      return new PagedResponse<>(Collections.emptyList(), 0, response.getTotalElements());
+    }
+
+    final List<DTO> dtos = getDtos(response.getContent());
+    return new PagedResponse<>(dtos, dtos.size(), response.getTotalElements());
   }
 
   @Override

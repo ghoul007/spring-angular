@@ -1,6 +1,8 @@
 package com.backend;
 
 import com.backend.dto.VehiculeDTO;
+import com.backend.dto.search.PagedResponse;
+import com.backend.dto.search.SearchRequest;
 import com.backend.entity.Vehicule;
 import com.backend.service.VehiculeService;
 import org.assertj.core.api.Assertions;
@@ -43,7 +45,8 @@ public class VehiculeServiceIntegrationTest {
         savedVehicle.getNumber()
       );
 
-    final List<VehiculeDTO> vehicles = service.list();
+    final PagedResponse<VehiculeDTO> list = service.list(new SearchRequest());
+    final List<VehiculeDTO> vehicles = list.getContent();
     assertThat(vehicles).isNotNull();
     assertThat(vehicles).hasSize(1);
 
