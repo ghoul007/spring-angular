@@ -7,7 +7,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableJpaRepositories("com.backend.repository")
+@EnableJpaRepositories(value ="com.backend.repository",
+        repositoryBaseClass = DistributedRepositoryImpl.class)
 public class ApplicationConfig implements WebMvcConfigurer {
 
   @Override

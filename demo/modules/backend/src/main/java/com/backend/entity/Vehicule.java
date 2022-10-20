@@ -1,28 +1,18 @@
 package com.backend.entity;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name="Vehicule")
+@Table(name="vehicule")
 public class Vehicule  extends DistributedEntity{
 
   @Column(nullable = false)
   private String number;
 
-  @Column(nullable = true)
-  private String hello;
-
-
-  public String getHello() {
-    return hello;
-  }
-
-  public void setHello(String hello) {
-    this.hello = hello;
-  }
+  @ManyToOne
+  @JoinColumn(name = "vehicletype", nullable = true)
+  private VehiculeType type;
 
   public String getNumber() {
     return number;
@@ -30,5 +20,13 @@ public class Vehicule  extends DistributedEntity{
 
   public void setNumber(String number) {
     this.number = number;
+  }
+
+  public VehiculeType getType() {
+    return type;
+  }
+
+  public void setType(VehiculeType type) {
+    this.type = type;
   }
 }

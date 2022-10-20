@@ -128,7 +128,6 @@ public abstract class AbstractCRUDService<ENTITY extends DistributedEntity, DTO 
 
   }
 
-
   public ENTITY findEntityById(final Integer id) {
     return repository.findById(id).orElse(null);
   }
